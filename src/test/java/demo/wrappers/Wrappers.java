@@ -28,10 +28,7 @@ public class Wrappers {
         this.driver = driver;
     }
 
-    // public static void clickOnElementWrapper(WebDriver driver, By locator) {
-    //     WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
-    //     wait.until(ExpectedConditions.elementToBeClickable(locator)).click();
-    // }
+
 
     ///// TESTCASE01////
     /*
@@ -111,7 +108,7 @@ public class Wrappers {
         System.out.println("Category has been detected");
         return true;
     }
-
+    ///TESTCASE03///
     /*
      * testCase03: Go to the "Music" tab and in the 1st section,
      * scroll to the extreme right. Print the name of the playlist.
@@ -138,6 +135,7 @@ public class Wrappers {
             return false;
         }
     }
+    ///TESTCASE04///
    /*testCase04: Go to the "News" tab 
    and print the title and body of the 1st 3 “Latest News Posts” along with the sum of the number
     of likes on all 3 of them. No likes given means 0. */
@@ -150,32 +148,40 @@ public class Wrappers {
     }
     public static void printTitles(WebDriver driver, By locator){
     
-            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
-            WebElement latestNewsPosts = wait.until(ExpectedConditions.visibilityOfElementLocated(locator));
-            
-            java.util.List <WebElement> newsLinks = latestNewsPosts.findElements(By.xpath(".//div[@role='link']"));
-            newsLinks = newsLinks.subList(0, 3);
-
-            LinkedHashMap<String,Integer> hMap = new LinkedHashMap<>();
-            for(WebElement newsLink : newsLinks){
+            try {
+                WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+                WebElement latestNewPosts = wait.until(ExpectedConditions.visibilityOfElementLocated(locator));
                 
-                String title = newsLink.findElement(By.xpath(".//*[@id='home-content-text']/span[1]")).getText();
-                int likeCount = 0;
-                if(newsLink.findElements(By.xpath(".//span[@id='vote-count-middle']")).size()!=0){
-                    likeCount = Integer.parseInt(
-                        newsLink.findElement(By.xpath(".//span[@id='vote-count-middle']")).getText().trim()
-                    );
+                java.util.List <WebElement> newsLinks = latestNewPosts.findElements(By.xpath(".//div[@role='link']"));
+                newsLinks = newsLinks.subList(0, 3);
+    
+                LinkedHashMap<String,Integer> hMap = new LinkedHashMap<>();
+                for(WebElement newsLink : newsLinks){
+                    
+                    String title = newsLink.findElement(By.xpath(".//*[@id='home-content-text']/span[1]")).getText();
+                    int likeCount = 0;
+                    if(newsLink.findElements(By.xpath(".//span[@id='vote-count-middle']")).size()!=0){
+                        likeCount = Integer.parseInt(
+                            newsLink.findElement(By.xpath(".//span[@id='vote-count-middle']")).getText().trim()
+                        );
+                    }
+                    hMap.put(title, likeCount);
                 }
-                hMap.put(title, likeCount);
+                
+                int index=0,sum=0;
+                for(Map.Entry<String,Integer> entry : hMap.entrySet()){
+                    System.out.println("News Link"+(++index));
+                    System.out.println("Content = "+entry.getKey()+"\n");
+                    sum+=entry.getValue();
+                }
+                System.out.println("Total number of likes= "+sum);
+    
+    
+            } catch (Exception e) {
+                // TODO: handle exception
+                System.out.println(e.getMessage());
             }
-            
-            int index=0,sum=0;
-            for(Map.Entry<String,Integer> entry : hMap.entrySet()){
-                System.out.println("News Link"+(++index));
-                System.out.println("Content = "+entry.getKey()+"\n");
-                sum+=entry.getValue();
-            }
-            System.out.println("Total number of likes= "+sum);
+    
 
     }
 }
